@@ -49,6 +49,8 @@
 
 ## 🎨 Credits
 
+![140635146_p48_master1200](https://github.com/user-attachments/assets/7b8971f0-fb1c-45ce-a8af-b99e000a8175)
+
 * **App Icon**: [Oldstore 낡은창고](https://www.pixiv.net/users/13170051)님의 작품을 사용하였습니당
 
 ---
