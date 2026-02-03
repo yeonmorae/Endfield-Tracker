@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>엔드필드 숙제 체크 리스트</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e1e;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      border-radius: 10px;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #222;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00ffcc;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #444;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    #open-settings {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #open-settings:hover {
+      color: #00ffcc;
+      transform: rotate(45deg);
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .left-section {
+      width: 60%;
+    }
+
+    .right-section {
+      width: 38%;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #00ffcc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #daily-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    #weekly-list,
+    #event-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .task-item {
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 12px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 6px;
+      border-left: 3px solid transparent;
+      transition: 0.2s;
+    }
+
+    .task-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-left-color: #00ffcc;
+    }
+
+    .task-item:has(input:checked) {
+      opacity: 0.4;
+      background: rgba(0, 0, 0, 0.2);
+      border-left-color: #555 !important;
+    }
+
+    .task-item:has(input:checked) span {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .expired {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    /* 설정 모달 */
+    #settings-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: #1e1e1e;
+      margin: 3% auto;
+      padding: 25px;
+      width: 700px;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: 12px;
+      border: 1px solid #444;
+      position: relative;
+    }
+
+    .close-x-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .close-x-btn:hover {
+      color: #ff4d4d;
+    }
+
+    .setting-group {
+      background: #282828;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #333;
+    }
+
+    .group-title {
+      color: #00ffcc;
+      font-weight: bold;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: #333;
+      border-radius: 4px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .btn-main {
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .del-btn {
+      background: #ff4d4d;
+      color: white;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      padding: 8px;
+      background: #111;
+      border: 1px solid #444;
+      color: white;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h2>엔드필드 숙제 체크 리스트</h2>
+    <button id="open-settings" title="설정">⚙️</button>
+  </div>
+
+  <div class="container">
+    <div class="left-section">
+      <div class="section-title">📅 일간 숙제</div>
+      <div id="daily-list"></div>
+    </div>
+    <div class="right-section">
+      <div class="weekly-area">
+        <div class="section-title">🗓️ 주간 숙제</div>
+        <div id="weekly-list"></div>
+      </div>
+      <div class="event-area" style="margin-top: 30px; border-top: 1px dashed #555; padding-top: 20px;">
+        <div class="section-title">🚩 이벤트</div>
+        <div id="event-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-modal">
+    <div class="modal-content">
+      <button class="close-x-btn" id="close-x-settings">&times;</button>
+      <h2 style="margin-top:0;">⚙️ 프로그램 설정</h2>
+
+      <div class="setting-group">
+        <div class="group-title">기본 제어</div>
+        <div style="margin-bottom: 15px;">
+          <label><input type="checkbox" id="set-always-on-top"> 항상 맨 위에 표시</label>
+        </div>
+        <div>
+          <label>투명도 조절 (<span id="opacity-value">100</span>%)</label><br>
+          <input type="range" id="set-opacity" min="20" max="100" value="100" style="width: 100%; margin-top: 10px;">
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="group-title">숙제 노출 및 삭제 관리</div>
+        <div id="visibility-controls" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
+      </div>
+
+      <div class="setting-group">
+        <div class="group-title">새 숙제 추가</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <input type="text" id="new-task-name" placeholder="숙제 이름 입력">
+          <div style="display: flex; gap: 15px;">
+            <label><input type="radio" name="task-type" value="daily" checked> 일간</label>
+            <label><input type="radio" name="task-type" value="weekly"> 주간</label>
+            <label><input type="radio" name="task-type" value="custom"> 직접 입력(시간)</label>
+          </div>
+          <div id="custom-time-container" style="display: none;">
+            <input type="text" id="new-task-time" placeholder="시간/주기 (예: 12:00, 2일마다)" style="width: 100%;">
+          </div>
+          <button id="add-task-btn" class="btn-main">숙제 추가하기</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="group-title">새 이벤트 추가</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <input type="text" id="new-event-name" placeholder="이벤트 이름 입력">
+          <input type="date" id="new-event-date">
+          <button id="add-event-btn" class="btn-main" style="background: #ffcc00;">이벤트 추가하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+
+</html>
