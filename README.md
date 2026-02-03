@@ -47,6 +47,12 @@
 
 ---
 
+## 🎨 Credits
+
+* **App Icon**: [Oldstore 낡은창고](https://www.pixiv.net/users/13170051)님의 작품을 사용하였습니당
+
+---
+
 ## 🛠️ 기술 스택 (Tech Stack)
 
 * **Frontend**: HTML5, CSS3, JavaScript
