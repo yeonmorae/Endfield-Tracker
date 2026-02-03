@@ -5,7 +5,8 @@
 ![Electron](https://img.shields.io/badge/Framework-Electron-47848F?logo=electron&logoColor=white)
 
 명조: 엔드필드 개척자분들을 위한 편리하고 미니멀한 숙제 관리 도구
-엔드필드 일간 업무 및 주간 업무, 이벤트 일정 관리 도구
+
+(일일 업무 및 주간 업무, 이벤트 일정 관리)
 
 ---
 
