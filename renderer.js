@@ -94,12 +94,15 @@ function createSettingItemHTML(task) {
 window.toggleVisibility = (id) => { const t = userTasks.find(x => x.id === id); if (t) t.visible = !t.visible; save(); };
 window.deleteTask = (id) => { if (confirm("삭제할까요?")) { userTasks = userTasks.filter(x => x.id !== id); save(); } };
 window.deleteEvent = (idx) => { if (confirm("삭제할까요?")) { userEvents.splice(idx, 1); save(); } };
-window.toggleTaskCheck = (id) => { 
-    const t = userTasks.find(x => x.id === id); 
+window.toggleTaskCheck = (id) => {
+    const t = userTasks.find(x => x.id === id);
     if (t) {
-        t.checked = !t.checked; 
-        localStorage.setItem('userTasks', JSON.stringify(userTasks));
-        renderMainList(); 
+        t.checked = !t.checked;
+        if (t.checked) {
+            t.lastChecked = Date.now(); 
+        }
+        save(); 
+        renderMainList();
     }
 };
 window.toggleEvent = (idx) => { 
@@ -174,11 +177,50 @@ window.onload = () => {
 
 function checkReset() {
     const now = new Date();
-    const last = localStorage.getItem('lastReset');
-    if (now.getHours() >= 5 && last !== now.toDateString()) {
-        userTasks.forEach(t => t.checked = false);
-        if (now.getDay() === 1) userTasks.filter(t => t.type === 'weekly').forEach(t => t.checked = false);
-        save();
-        localStorage.setItem('lastReset', now.toDateString());
+    const lastResetStr = localStorage.getItem('lastReset');
+    const lastReset = lastResetStr ? new Date(lastResetStr) : new Date(0);
+
+    const today5AM = new Date(now);
+    today5AM.setHours(5, 0, 0, 0);
+
+    const lastMonday = new Date(now);
+    const day = now.getDay();
+    const diff = (day === 0 ? 6 : day - 1); 
+    lastMonday.setDate(now.getDate() - diff);
+    lastMonday.setHours(5, 0, 0, 0);
+
+    userTasks.forEach(t => {
+        if (t.type === 'daily' && now >= today5AM && lastReset < today5AM) {
+            t.checked = false;
+        }
+
+        if (t.type === 'weekly' && now >= lastMonday && lastReset < lastMonday) {
+            t.checked = false;
+        }
+
+        if (t.type === 'custom' && t.checked && t.lastChecked && t.time) {
+            const diffTime = now.getTime() - t.lastChecked;
+            const diffHours = diffTime / (1000 * 60 * 60);
+
+            if (t.time.includes(':')) {
+                const [targetHour] = t.time.split(':').map(Number);
+                const lastCheckDate = new Date(t.lastChecked);
+                if (now.toDateString() !== lastCheckDate.toDateString() && now.getHours() >= targetHour) {
+                    t.checked = false;
+                }
+            } else {
+                const cycleDays = parseInt(t.time.replace(/[^0-9]/g, ''));
+                if (!isNaN(cycleDays) && diffHours >= cycleDays * 24) {
+                    t.checked = false;
+                }
+            }
+        }
+    });
+
+    if (now >= today5AM && lastReset < today5AM) {
+        localStorage.setItem('lastReset', now.toString());
     }
+    
+    save();
+    renderMainList();
 }
