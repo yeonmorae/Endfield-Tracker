@@ -134,6 +134,13 @@ window.onload = () => {
     document.getElementById('new-event-date').value = new Date().toISOString().split('T')[0];
 
     document.getElementById('open-settings').onclick = () => { renderVisibilitySettings(); modal.style.display = 'block'; };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+    
     document.getElementById('close-x-settings').onclick = () => modal.style.display = 'none';
 
     window.addEventListener('keydown', (e) => {
