@@ -22,7 +22,10 @@ function createWindow() {
 }
 
 ipcMain.on('toggle-always-on-top', (event, arg) => {
-  if (win) win.setAlwaysOnTop(arg);
+  if (win) {
+    win.setAlwaysOnTop(arg, 'screen-saver');
+    if(arg) win.show(); 
+  }
 });
 
 ipcMain.on('change-opacity', (event, opacity) => {

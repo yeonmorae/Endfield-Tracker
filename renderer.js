@@ -224,6 +224,15 @@ function checkReset() {
         }
     });
 
+    const originalEventCount = userEvents.length;
+    userEvents = userEvents.filter(event => {
+        const eventDate = new Date(event.date);
+        eventDate.setHours(5, 0, 0, 0);
+        const diff = eventDate - now;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        return days >= 0;
+    });
+
     if (now >= today5AM && lastReset < today5AM) {
         localStorage.setItem('lastReset', now.toString());
     }
