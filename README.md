@@ -1,7 +1,7 @@
 # ⚡ 명조: 엔드필드 숙제 체크 리스트 (Endfield Tracker)
 
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-1.2.0-blue)
+![Version](https://img.shields.io/badge/Version-1.3.0-blue)
 ![Electron](https://img.shields.io/badge/Framework-Electron-47848F?logo=electron&logoColor=white)
 
 명조: 엔드필드 개척자분들을 위한 편리하고 미니멀한 숙제 관리 도구
